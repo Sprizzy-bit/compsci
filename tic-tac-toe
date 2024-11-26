@@ -1,0 +1,130 @@
+def printboard():
+    printCheck = 0
+    print("\nHere is the state of the board:")
+    while(printCheck < 9):
+            #prints board by looping through the list and going to the next line after every 3 lines
+            print(*board[printCheck:(printCheck+3)])
+            printCheck += 3
+    
+    
+def boardUpdate(placement, turn):
+    #checks to make sure that placement is possible first
+    if((placement > 0) & (placement < 10)):
+        #checks whos turn it currently is
+        if((turn == False) and ((board[placement-1] != 'X') and (board[placement-1] != 'O'))):
+            #places the respective players character on the board
+            #swaps turn in the same line
+            board[placement-1] = 'X'
+            turn = True
+            printboard()
+            return turn
+            
+        elif((turn == True) and ((board[placement-1] != 'X') and (board[placement-1] != 'O'))):
+            board[placement-1] = 'O'
+            turn = False
+            printboard()
+            return turn   
+    if(board[placement-1] == ('X' or 'O')):
+        #basic check to make sure there ain't something there
+        print("\nSpot Taken! Try Again.")
+        printboard()
+        return turn
+
+
+    
+
+
+def winCheck():
+    #Across
+    win = False
+    if(board[0] == board[1] == board[2] == "X"):
+        print("Player 1 wins!")
+        win = True
+    elif(board[0] == board[1] == board[2] == "O"):
+        print("Player 2 wins!")
+        win = True
+    elif(board[3] == board[4] == board[5] == "X"):
+        print("Player 1 wins!")
+        win = True
+    elif(board[3] == board[4] == board[5] == "O"):
+        print("Player 2 wins!")
+        win = True
+    elif(board[6] == board[7] == board[8] == "X"):
+        print("Player 1 wins!")
+        win = True
+    elif(board[6] == board[7] == board[8] == "O"):
+        print("Player 2 wins!")
+        win = True
+    #Diagonal
+    elif(board[0] == board[4] == board[8] == "X"):
+        print("Player 1 wins!")
+        win = True
+    elif(board[0] == board[4] == board[8] == "O"):
+        print("Player 2 wins!")
+        win = True
+    elif(board[2] == board[4] == board[6] == "X"):
+        print("Player 1 wins!")
+        win = True
+    elif(board[2] == board[4] == board[6] == "O"):
+        print("Player 2 wins!")
+        win = True
+    #Vertical
+    elif(board[0] == board[3] == board[6] == "X"):
+        print("Player 1 wins!")
+        win = True
+    elif(board[0] == board[3] == board[6] == "O"):
+        print("Player 2 wins!")
+        win = True
+    elif(board[1] == board[4] == board[7] == "X"):
+        print("Player 1 wins!")
+        win = True
+    elif(board[1] == board[4] == board[7] == "O"):
+        print("Player 2 wins!")
+        win = True
+    elif(board[2] == board[5] == board[8] == "X"):
+        print("Player 1 wins!")
+        win = True
+    elif(board[2] == board[5] == board[8] == "O"):
+        print("Player 2 wins!")
+        win = True
+    
+    return win
+   
+    
+
+
+
+
+#basic intiatlization of the board
+board = ['-','-','-','-','-','-','-','-','-']
+turn = False
+turnCount = 1
+win = False
+
+while(turnCount < 10):
+    #makes sure its the right players turn and nobody won
+    if((turn == True) & (win == False)):
+        #O's turn
+        placement = int(input('Player 2, enter the number representing the location to place your O (1-9): '))
+        turn = boardUpdate(placement, turn)
+        turnCount += 1
+        win = winCheck()
+        if win == True:
+            #the bane of my existence
+            break
+        print()
+    elif((turn == False) & (win == False)):
+        #X's turn
+        placement = int(input('Player 1, enter the number representing the location to place your X (1-9): '))
+        turn = boardUpdate(placement, turn)
+        turnCount += 1
+        win = winCheck()
+        if win == True:
+            break
+        print()
+
+if((turnCount == 10) & (win == False)):
+    print("Tied game!")
+
+
+
