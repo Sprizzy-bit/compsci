@@ -1,0 +1,272 @@
+#Im going mentally insane
+import random
+
+def create_deck():
+    deck = []
+    colors = ["red", "green", "blue", "yellow"] 
+    special = ["skip", "reverse", "+2", "wild", "+4"] 
+    
+    color = 0
+    num = 0 
+    #j is used to iterate through the special cards
+    j = 0
+    #k checks how many times the deck iterates the first batch
+    k = 0
+    repeat = 0
+    #loops through the colors
+    while color < 4:
+        #adds the numbers to the colors
+        while num < 10: 
+            #adds the numbers to a list that adds the colors 
+            #num is mainly used to keep track
+            deck.append([colors[color], num]) 
+            num+=1
+        while(10 <= num) and (num < 14) and (repeat == 0):
+            #iterates through the numbers regulary
+            deck.append([colors[color], special[j]])
+            j+=1
+            num+=1
+        while(10 <= num) and (num < 15) and (repeat == 1):
+            #iterates through the numbers the same way but instead doesn't do the zero
+            deck.append([colors[color], special[j]])
+            j+=1
+            num+=1
+        color+=1
+        num=0
+        j=0
+        k+=1
+        if (repeat == 1):
+            for cards in deck:
+                #adds the wild cards to the deck seperately
+                if (cards[1] == "wild") or (cards[1] == "+4"):
+                    cards[0] = "none"
+        if(color == 4 and repeat == 0):
+            color = 0
+            repeat +=1
+        
+    #NEEDS TO BE COMMENTED OUT WHEN DONE
+    #print(deck)
+    #print(deck[0][1])
+    #print(len(deck))
+    #print(color)
+    #print(j)      
+    #print(repeat)
+    #execept for this :)
+    return deck
+
+#didnt want to combine everything into one mega block
+def play(game_deck):
+    i = 0
+    turn_direction = 1
+    full_stack = []
+    forced_draw = False
+    skip = False
+    draw = 0
+    new_color = "N/A"
+    turn = 0
+    not_finished = True
+    top_of_deck = game_deck.pop(0)
+    full_stack.append(top_of_deck)
+    #removes card from top of deck and places it there
+    print(players)
+    print()
+    #keeps the game going until it's true
+    while not_finished:
+        
+        
+
+        #players[[player][player num (just found outs its uncessary but oh well)] players hand --->[[card color][card number]]]
+        #player    [0]                          [1]                                                          [2][1-7]
+        #player[2] accesses entire player deck
+        #player[2][0] accesses card
+        #player[2][0][0] accesses color
+        #player[2][0][1] accesses number
+
+        #checks if any players have no cards
+
+        
+        #win condition
+        if len(game_deck) == 0:
+            random.shuffle(full_stack)
+            game_deck = full_stack
+            full_stack = []
+
+        #makes sure the turn counter doesn't overshoot and cause an index error
+        turn = turn % player_count
+
+        #resets turns to 0 if its higher than the player count
+        if turn >= player_count:
+            turn = 0
+        #resets turns to player count. Its the opposite of the one above. Mean't for the reverse card really
+        if turn < 0:
+            turn = player_count - 1
+
+        #checks if its even that player's turn
+        if skip:
+            turn+=turn_direction
+            skip = False
+            print(f"Player {turn + 1} was skipped!")
+            continue
+        #I found a way to make it simplier :)
+        player = players[turn]
+
+        # Check if the player's card list is empty
+        if not player[2]:  
+            print(f"{player[1]} wins!")
+            # Ends the game
+            not_finished = False 
+            # Exit the loop since the game is over 
+            break  
+
+        
+
+        #input players card (1-7)
+        print()
+        if(not forced_draw and draw == 0):
+            print("Current Card:", top_of_deck)
+            #displays player's turn
+            print()
+            print(f'Player {turn + 1} cards: {player[2]}')
+            print()
+            choice = ((input(f"Choose card Player {turn+1} (1-{len(player[2])}) [Enter none if there is no card that can be played]: ")))
+            #no cards? Draw.
+            if choice == "none":
+                # Draw a card
+                player[2].append(game_deck.pop(0)) 
+                print()
+                print(f"Player {turn + 1} chose to draw.")
+                # Increment the turn even if the player passes
+                turn += turn_direction  
+                if turn >= player_count:
+                    # Goes to the next player
+                    turn = 0
+                elif turn < 0:
+                    turn = player_count-1  
+                continue
+            #makes sure that the 'choice' card is within the limits of the player's hand
+            elif (0 >= int(choice)) or (int(choice)> len(player[2])):
+                print()
+                print(f"Invalid card number: choose a number (1-{len(player[2])})")
+                print()
+                print(top_of_deck)
+                print()
+            
+
+            else:
+                
+                #takes the players card for validation if it can be played
+                card_pick = player[2][int(choice)-1]
+                choice = int(choice)-1
+
+                #checks to make sure the number is within the length of the player's hand
+                if (0 <= choice < len(player[2])):
+                    #checks if, the card color is the same as the top of deck, the card color is 'none' if a wild was used, the number is the same, or if the new color is the same as the old color and the top of the deck is within the no col card list
+                    if (card_pick[0] == top_of_deck[0]) or (card_pick[1] == top_of_deck[1]) or (card_pick[1] in ["wild", "+4"]):
+                        recent_change = False
+                        full_stack.append(player[2][choice])
+                        if(card_pick[1] == '+2'):
+                            draw = 2
+                            forced_draw = True
+                            top_of_deck = player[2].pop(choice)
+                            turn+= turn_direction
+                            continue
+                        elif(card_pick[1] == 'skip'):
+                            skip = True
+                            top_of_deck = player[2].pop(choice)   
+                            turn+=turn_direction
+                            continue
+                        elif(card_pick[1] == 'reverse'):
+                            turn_direction *= -1
+                            top_of_deck = player[2].pop(choice)
+                            turn+= turn_direction   
+
+                        elif(card_pick[0] == 'none'):
+                            
+                            top_of_deck = player[2].pop(choice)
+                            new_color = input('what is the color? ').lower()
+                            if new_color in ["red" , "blue" , "green" , "yellow"]:
+                                #print(recent_change)
+                                top_of_deck[0] = new_color
+                                if(card_pick[1] == '+4'):
+                                    draw = 4
+                                    forced_draw = True
+                                    turn+= turn_direction
+                                    continue
+                                else:
+                                    turn+= turn_direction
+                        else:
+                            top_of_deck = player[2].pop(choice)   
+                            full_stack.append(top_of_deck)
+                            turn+= turn_direction
+                                
+                    else:
+                        print()
+                        print("Invalid card choice: The card does not match the top of the deck.")
+                        print()
+                        full_stack.append(top_of_deck)
+                        print (top_of_deck)
+                        print()
+        else:
+            while i < draw:
+                player[2].append(game_deck.pop(0))
+                i+=1    
+            turn+=turn_direction
+            print(f"Player {turn} had to draw {draw} and was skipped!")
+            forced_draw = False
+            draw = 0
+            skip = False
+            turn
+            continue
+
+
+                
+                    
+                    
+            
+            
+        
+
+
+
+
+
+#mainly just because I don't like it not enclosed. It hurts my head
+def main():
+    #makes the game
+    game_deck = create_deck()
+    #shuffles the deck using random
+    random.shuffle(game_deck)
+    
+    global player_count
+    player_count = int(input('how many players? (2-4): '))
+
+    while player_count < 2 or player_count > 4:
+        player_count = int(input('invalid number of players. How many players? (2-4): '))
+    #global variable so that players can be used everywhere
+    global players
+    players = []
+    #while making the deck, makes sure it doesn't do the same player
+    player_pass = 0
+    player_deck = []
+    card_pass = 0
+    while player_pass < player_count:
+        while card_pass < 7:
+            cardNum = random.randint(0, len(game_deck)-1)
+            player_deck.append(game_deck.pop(cardNum))
+            card_pass += 1
+        
+        #adds players to a list so they cna be kept track of
+        players.append(["player", f"NUM {player_pass + 1}", player_deck])
+        player_pass+=1
+        player_deck = []
+        card_pass = 0
+    
+
+    #print(*players)
+    #I still don't like stuff being everywhere
+    play(game_deck)
+    
+
+    
+main()
+
