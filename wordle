@@ -1,0 +1,66 @@
+# Do not delete this line!
+from wordle_helpers import select_random_word, print_color
+
+def check(word, wordCheck):
+    win = False
+    wordSep = list(word)
+    wordSepC = list(wordCheck)
+    green = []
+    yellow = []
+    black = []
+    for i in range(len(wordSepC)):
+        if(wordSep[i] == wordSepC[i]):
+            green.append(wordSep[i])
+
+        if wordSep[i] != wordSepC[i]:
+            if wordSep[i] in wordSepC and wordSep[i] != wordSepC[i]:
+                yellow.append(wordSep[i])
+
+        if  wordSep[i] not in wordSepC and wordSep[i] != wordSepC[i]:
+            if (wordSep[i] not in yellow) or (wordSep[i] not in green):
+                black.append(wordSep[i])
+
+        
+
+        if(wordSep[i] == wordSepC[i]):
+            print_color(wordSep[i], 'GREEN')
+
+        if wordSep[i] != wordSepC[i]:
+            if wordSep[i] in wordSepC and wordSep[i] != wordSepC[i]:
+                print_color(wordSep[i], 'YELLOW')
+
+        if  wordSep[i] not in wordSepC and wordSep[i] != wordSepC[i]:
+            if wordSep[i] not in yellow or green:
+                print_color(wordSep[i], 'BLACK')
+
+    
+        
+
+    print()
+# Do not change this function name!
+def main():
+    wordle = select_random_word().lower()
+    turn = 0
+    while turn < 6:
+        guess = input("Enter a guess: ").lower()
+        if (len(guess) != 5):
+            print("enter a 5 letter word.")
+        else:
+            win = check(guess, wordle)
+            turn+=1
+        if(guess == wordle):
+            print("You got it!")
+            break
+
+    if guess!= wordle:
+        print("Sorry, the word was: " + wordle)
+    
+
+    # Your code here.
+    # print_color will print a single character in the specified color
+    # print_color("a", "GREEN")
+
+# Comment this out when submitting for tests!
+#main()
+
+
